@@ -6,22 +6,20 @@ var value = ""
 
 fun main() {
 
-    while(true) {
-        println("Do you want to convert /from decimal or /to decimal? (To quit type /exit)")
-        when (readln()) {
-            "/exit" -> return
-            "/from" -> {
-                value = readDecimal()
-                fromRadix = 10
-                toRadix = readToRadix()
-            }
-            "/to" -> {
-                value = readSource()
-                toRadix = 10
-                fromRadix = readFromRadix()
-            }
+    while (true) {
+        println("Enter two numbers in format: {source base} {target base} (To quit type /exit)")
+        val readString = readln()
+        if (readString == "/exit") return
+        val stringArray = readString.split(" ")
+        fromRadix = stringArray[0].toInt()
+        toRadix = stringArray[1].toInt()
+
+        while (true) {
+            println("Enter number in base $fromRadix to convert to base $toRadix (To go back type /back)")
+            value = readln()
+            if (value == "/back") break
+            println("Conversion result: ${conversion(fromRadix, toRadix, value)}")
         }
-        println("Conversion ${toDecimal()}result: ${conversion(fromRadix, toRadix, value)}")
     }
 }
 
@@ -29,29 +27,3 @@ fun conversion(fromRadix: Int, toRadix: Int, value: String): String {
     return value.toBigInteger(fromRadix).toString(toRadix)
 
 }
-
-fun toDecimal(): String {
-    if (toRadix == 10) return "to decimal "
-    return ""
-}
-
-fun readFromRadix(): Int {
-    println("Enter source base:")
-    return readln().toInt()
-}
-
-fun readToRadix(): Int {
-    println("Enter the target base:")
-    return readln().toInt()
-}
-
-fun readSource(): String {
-    println("Enter source number:")
-    return readln()
-}
-
-fun readDecimal(): String {
-    println("Enter a number in decimal system:")
-    return readln()
-}
-

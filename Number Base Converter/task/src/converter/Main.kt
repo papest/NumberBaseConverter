@@ -1,5 +1,7 @@
 package converter
 
+const val RESULT_ACCURACY = 5
+
 var fromRadix = 10
 var toRadix = 10
 var value = ""
@@ -24,6 +26,32 @@ fun main() {
 }
 
 fun conversion(fromRadix: Int, toRadix: Int, value: String): String {
-    return value.toBigInteger(fromRadix).toString(toRadix)
 
+    if (value.indexOf('.') < 0) return value.toBigInteger(fromRadix).toString(toRadix)
+    val array = value.split(".")
+    return "${conversion(fromRadix, toRadix, array[0])}.${conversionFraction(fromRadix, toRadix, array[1])}"
+
+}
+
+fun conversionFraction(fromRadix: Int, toRadix: Int, s: String): String {
+    val length = s.length
+    var zeroCount = 0
+
+    for (i in 0 until length) {
+        if (s[i] != '0') break
+        zeroCount++
+    }
+    if (zeroCount == length) return "0".repeat(RESULT_ACCURACY)
+    var number = s.toBigInteger(fromRadix)
+    val toRadixBigInteger = "10".toBigInteger(toRadix)
+    val one = "1${"0".repeat(length)}".toBigInteger(fromRadix)
+    val result: MutableList<Char> = mutableListOf()
+
+    for (i in 0 until RESULT_ACCURACY) {
+        number *= toRadixBigInteger
+        result.add((number / one).toString(toRadix).first())
+        number %= one
+    }
+
+    return result.joinToString("")
 }
